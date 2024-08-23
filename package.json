@@ -5,7 +5,9 @@
 	"main": "lib/index.js",
 	"scripts": {
 		"test": "mocha test/assertions.js",
-		"format": "biome format --write"
+		"format": "biome format --write",
+		"check": "biome ci . --linter-enabled=false",
+		"fix-lint": "biome check --write ./"
 	},
 	"author": "bun913",
 	"license": "MIT",
