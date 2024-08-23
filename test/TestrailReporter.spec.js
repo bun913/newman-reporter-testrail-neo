@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { makeSampleEmitter } from "./utils/emitter"
 import TestrailReporter from "../lib/TestrailReporter"
+import { makeSampleEmitter } from "./utils/emitter"
 
 describe("TestrailReporter", () => {
   describe("onComplete", () => {
