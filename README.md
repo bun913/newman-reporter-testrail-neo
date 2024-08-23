@@ -1,7 +1,7 @@
-# testrail-newman-bridge
+# newman-reporter-neo
 
 > [!NOTE]
-> This repository is inspired by [billylam/testrail-newman-bridge](https://github.com/billylam/testrail-newman-bridge).
+> This repository is inspired by [billylam/newman-reporter-neo](https://github.com/billylam/newman-reporter-neo).
 > Unfortunately, the project has been archived and is no longer maintained.
 > So, I decided to create a new project based on the original one.(not forked)
 
