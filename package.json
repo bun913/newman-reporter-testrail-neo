@@ -4,8 +4,8 @@
   "description": "TestRail reporter for Newman",
   "main": "lib/index.js",
   "scripts": {
-    "test": "vitest ./test",
-    "test-ci": "vitest run ./test",
+    "test": "vitest ./test --silent",
+    "test-ci": "vitest run ./test --silent",
     "format": "biome format --write",
     "check": "biome ci . --linter-enabled=false",
     "fix-lint": "biome check --write ./"
@@ -29,12 +29,7 @@
   "directories": {
     "lib": "lib"
   },
-  "keywords": [
-    "newman",
-    "postman",
-    "testrail",
-    "reporter"
-  ],
+  "keywords": ["newman", "postman", "testrail", "reporter"],
   "repository": {
     "type": "git",
     "url": "https://github.com/bun913/newman-reporter-neo.git"
