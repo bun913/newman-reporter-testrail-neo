@@ -96,7 +96,8 @@ npm pack
 3. install the package
 
 ```bash
-npm i -g ./newman-reporter-testrail-neo-1.0.0.tg
+# x.x.x is the version of the package
+npm i -g ./newman-reporter-testrail-neo-x.x.x.tg
 ```
 
 4. run system test
