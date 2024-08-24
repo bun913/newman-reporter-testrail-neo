@@ -13,7 +13,7 @@
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Successful Get request\", function () {",
+              "pm.test(\"C1 Successful Get request\", function () {",
               "    pm.expect(pm.response.code).to.be.eq(200);",
               "});"
             ],
