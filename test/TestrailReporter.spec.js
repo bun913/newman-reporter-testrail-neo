@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import TestrailReporter from "../lib/TestrailReporter"
+import getEnv from "../lib/environment"
 import { makeSampleEmitter } from "./utils/emitter"
 import { setEnvVars } from "./utils/env"
 import makeNewmanResult from "./utils/newman"
-import getEnv from "../lib/environment"
 
 describe("TestrailReporter", () => {
   describe("onComplete", () => {
@@ -183,7 +183,6 @@ describe("TestrailReporter", () => {
         // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
         expect(sut.results[0].status_id).toBe(4)
       })
-
     })
 
     describe("umarked test case handling", () => {
