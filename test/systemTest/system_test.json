@@ -25,10 +25,10 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "https://github.com/bun913/newman-reporter-neo",
+          "raw": "https://github.com/bun913/newman-reporter-testrail-neo",
           "protocol": "https",
           "host": ["github", "com"],
-          "path": ["bun913", "newman-reporter-neo"]
+          "path": ["bun913", "newman-reporter-testrail-neo"]
         }
       },
       "response": []
