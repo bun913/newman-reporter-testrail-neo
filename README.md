@@ -46,7 +46,7 @@ pm.test("C226750 C226746 Status code is 200", function () {
 | TESTRAIL_CLOSE_RUN      | Whether to close the TestRail run after completion of the Newman run.  Defaults to false.                                                                                                               |
 | TESTRAIL_CUSTOM_*       | A fixed testrail field, where * is the field key                                                                                                                                                                    |
 | TESTRAIL_LOGGING        | Output logging.  Options are full, headers, none.  Defaults to full.  Use the none or headers option if you are getting a "Request Entity Too Large" error.                                                         |
-| TESTRAIL_PASSED_ID      | The ID of a custom status to use for Passed.  Defaults to 1 which is the value for the Passed status.                                                                                                               |
+| TESTRAIL_PASSED_ID      | The ID of a custom status to use for Passed.  Defaults to 1 which is the value for the Passed status. |                                                                                                           
 | TESTRAIL_FAILED_ID      | The ID of a custom status to use for Failed.  Defaults to 5 which is the value for the Failed status.                                                                                                               |
 | TESTRAIL_SKIPPED_ID     | The ID of a custom status to use for Skipped.  Defaults to 4 which is the value for the Skipped status.                                                                                                             |
 | TESTRAIL_STEPS          | Project uses test steps.  Test cases that share the same case id are assumed to be steps for the same test case.  Defaults to false.                                                                                |
@@ -68,4 +68,41 @@ Example:
 TESTRAIL_DOMAIN=example.testrail.com TESTRAIL_USERNAME=exampleuser 
 TESTRAIL_APIKEY=yourkey TESTRAIL_PROJECTID=99 TESTRAIL_TITLE="Dev-API Regression" 
 newman run my-collection.postman_collection.json -r testrail,cli
+```
+
+## Development
+
+> [!NOTE]
+> I'd like to automate the system test process, but TestRail doesn't have any free plans.
+> So, it's difficult to prepare the test environment.
+> Currently, I'm using my own TestRail account to test the system test.
+
+### How to System Test
+
+1. export environment variables
+
+```bash
+export TESTRAIL_DOMAIN=hoge.com
+export TESTRAIL_USERNAME=hoge@example.com
+export TESTRAIL_PROJECTID=1
+export TESTRAIL_APIKEY=fugafuga
+```
+
+2. pack this package
+
+```bash
+npm pack
+```
+
+3. install the package
+
+```bash
+# x.x.x is the version of the package
+npm i -g ./newman-reporter-testrail-neo-x.x.x.tg
+```
+
+4. run system test
+
+```bash
+newman run ./test/systemTest/system_test.json -r testrail-neo
 ```
