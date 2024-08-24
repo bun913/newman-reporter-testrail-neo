@@ -184,5 +184,7 @@ describe("TestRailApi", () => {
     })
   })
 
+  // TODO: refactor pushToTestrail and write tests using fakes
+
 
 });
