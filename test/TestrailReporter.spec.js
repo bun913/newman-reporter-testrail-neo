@@ -213,7 +213,6 @@ describe("TestrailReporter", () => {
         sut.jsonifyResults(executions)
 
         // assert
-        console.log(sut.results)
         expect(sut.results).lengthOf(1)
         expect(sut.results[0].case_id).toBe("01")
         expect(sut.results[0].status_id).toBe(1)
