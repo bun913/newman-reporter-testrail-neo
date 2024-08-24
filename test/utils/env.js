@@ -6,7 +6,7 @@ export const setEnvVars = (vi, setEnvs = {}) => {
   vi.stubEnv("TESTRAIL_PROJECTID", "testProjectId")
 
   // set env if provided
-  Object.keys(setEnvs).forEach((key) => {
+  for (const key of Object.keys(setEnvs)) {
     vi.stubEnv(key, setEnvs[key])
-  })
+  }
 }
