@@ -1,4 +1,4 @@
-module.exports = function generateJson({
+module.exports = function makeNewmanResult({
   caseNumbers = "C01",
   error = false,
   skipped = false,
