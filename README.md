@@ -9,7 +9,7 @@ TestRail reporter for Newman.
 
 ## Installation
 
-WIP - Not yet published to npm.
+- `npm i newman-reporter-testrail-neo`
 
 ## Usage
 
@@ -60,7 +60,7 @@ You may also set some or all of these variables using bash exports or by declari
 
 ### Run newman with the reporter option
 
-`-r testrail`
+`-r testrail-neo`
 
 Example:
 
