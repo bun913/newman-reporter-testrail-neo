@@ -1,6 +1,6 @@
 {
   "name": "newman-reporter-testrail-neo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TestRail reporter for Newman",
   "main": "lib/index.js",
   "scripts": {
@@ -29,7 +29,12 @@
   "directories": {
     "lib": "lib"
   },
-  "keywords": ["newman", "postman", "testrail", "reporter"],
+  "keywords": [
+    "newman",
+    "postman",
+    "testrail",
+    "reporter"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/bun913/newman-reporter-testrail-neo.git"
