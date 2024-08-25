@@ -4,7 +4,7 @@
   "description": "TestRail reporter for Newman",
   "main": "lib/index.js",
   "scripts": {
-    "test": "vitest ./test",
+    "test": "vitest ./test --reporter=verbose",
     "test-ci": "vitest run ./test --silent",
     "format": "biome format --write",
     "check": "biome ci . --linter-enabled=false",
