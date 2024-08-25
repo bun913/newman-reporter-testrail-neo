@@ -15,31 +15,52 @@ jobs:
     steps:
       - name: Get semantic version
         id: semver
-        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - uses: actions/checkout@v4
         with:
-          ref: v${{ steps.semver.outputs.version }}
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
+      - name: Configure Git
+        run: |
+          git config user.name 'GitHub Action'
+          git config user.email 'action@github.com'
+
+      - name: Create new branch
+        run: git checkout -b update-version-${{ steps.semver.outputs.version }}
+
       - name: Update package version
         run: npm version ${{ steps.semver.outputs.version }} --no-git-tag-version
 
       - name: Commit updated package version
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "chore: Update package version"
-          branch: main
-
-      - name: Update Git tag
         run: |
-          git tag ${{ github.ref_name }} -f
-          git push origin ${{ github.ref_name }} -f
+          git add package.json
+          git commit -m "chore: Update package version to ${{ steps.semver.outputs.version }}"
 
-      - run: npm publish
+      - name: Push changes
+        run: git push origin update-version-${{ steps.semver.outputs.version }}
+
+      - name: Publish to NPM
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "Update package version to ${{ steps.semver.outputs.version }}"
+          body: "Automated PR to update package version"
+          branch: "update-version-${{ steps.semver.outputs.version }}"
+          base: "main"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.semver.outputs.version }}
+          name: Release v${{ steps.semver.outputs.version }}
+          generate_release_notes: true
