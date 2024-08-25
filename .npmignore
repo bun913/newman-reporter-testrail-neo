@@ -1,3 +1,8 @@
+.github/
 node_modules
 test/
-.vscode
+.vscode/
+.DS_Store
+.env
+biome.json
+vitest.config.js
