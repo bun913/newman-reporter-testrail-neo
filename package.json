@@ -30,12 +30,7 @@
   "directories": {
     "lib": "lib"
   },
-  "keywords": [
-    "newman",
-    "postman",
-    "testrail",
-    "reporter"
-  ],
+  "keywords": ["newman", "postman", "testrail", "reporter"],
   "repository": {
     "type": "git",
     "url": "https://github.com/bun913/newman-reporter-testrail-neo.git"
