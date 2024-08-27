@@ -208,9 +208,9 @@ describe("TestrailReporter", () => {
           setEnvVars(vi)
           vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true")
           const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
-          sut.testRailApi.getCases = vi.fn().mockReturnValueOnce([
-            { id: 1, title: "TestTitle" },
-          ])
+          sut.testRailApi.getCases = vi
+            .fn()
+            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }])
           sut.env = getEnv()
           const executions = makeNewmanResult({ assertionName: "TestTitle" })
 
@@ -227,11 +227,13 @@ describe("TestrailReporter", () => {
           setEnvVars(vi)
           vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true")
           const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
-          sut.testRailApi.getCases = vi.fn().mockReturnValueOnce([
-            { id: 1, title: "TestTitle" },
-          ])
+          sut.testRailApi.getCases = vi
+            .fn()
+            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }])
           sut.env = getEnv()
-          const executions = makeNewmanResult({ assertionName: "NoMatchedTitle" })
+          const executions = makeNewmanResult({
+            assertionName: "NoMatchedTitle",
+          })
 
           // act
           sut.jsonifyResults(executions)
