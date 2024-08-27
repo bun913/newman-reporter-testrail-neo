@@ -201,6 +201,49 @@ describe("TestrailReporter", () => {
       })
     })
 
+    describe("User wants to establish connection by title not by case id", () => {
+      describe("When TESTRAIL_TITLE_MATCHING env value is `true`", () => {
+        it("Newman assertions with title `TestTitle` matched to TestRail test case with `TestTitle`", () => {
+          // arrange
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.testRailApi.getCases = vi
+            .fn()
+            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }])
+          sut.env = getEnv()
+          const executions = makeNewmanResult({ assertionName: "TestTitle" })
+
+          // act
+          sut.jsonifyResults(executions)
+
+          // assert
+          expect(sut.results).lengthOf(1)
+          expect(sut.results[0].case_id).toBe("1")
+        })
+
+        it("Newman assertions with title `NoMatchedTitle` not matched to TestRail test case with `TestTitle`", () => {
+          // arrange
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.testRailApi.getCases = vi
+            .fn()
+            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }])
+          sut.env = getEnv()
+          const executions = makeNewmanResult({
+            assertionName: "NoMatchedTitle",
+          })
+
+          // act
+          sut.jsonifyResults(executions)
+
+          // assert
+          expect(sut.results).lengthOf(0)
+        })
+      })
+    })
+
     describe("test rail v1 API", () => {
       it("works for TestRail v1 api", () => {
         // arrange

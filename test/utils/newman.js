@@ -1,9 +1,14 @@
 module.exports = function makeNewmanResult({
   caseNumbers = "C01",
+  assertionName = "",
   error = false,
   skipped = false,
   tldOnly = false,
 } = {}) {
+  let assertionFullName = assertionName
+  if (assertionName === "") {
+    assertionFullName = `${caseNumbers} Status code is 400`
+  }
   const json = {
     cursor: {},
     item: {
@@ -74,7 +79,7 @@ module.exports = function makeNewmanResult({
     id: "59395a21-ad0a-4baf-b452-beddb3d471a4",
     assertions: [
       {
-        assertion: `${caseNumbers} Status code is 400`,
+        assertion: assertionFullName,
         skipped,
       },
     ],
