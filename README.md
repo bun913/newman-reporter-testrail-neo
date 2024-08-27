@@ -1,5 +1,7 @@
 # newman-reporter-testrail-neo
 
+[![codecov](https://codecov.io/github/bun913/newman-reporter-testrail-neo/graph/badge.svg?token=ODJX5FGW6Q)](https://codecov.io/github/bun913/newman-reporter-testrail-neo)
+
 > [!NOTE]
 > This repository is inspired by [billylam/newman-reporter-testrail](https://github.com/billylam/newman-reporter-testrail).
 > Unfortunately, the project has been archived and is no longer maintained.
