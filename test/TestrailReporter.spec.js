@@ -201,6 +201,72 @@ describe("TestrailReporter", () => {
       })
     })
 
+    describe("TESTRAIL_STEPS env value is", () => {
+      describe("true: reports multiple assertions as a steps if they have same test case ids", () => {
+        it("reports as an failed test case when one step fails, even if others succeed", () => {
+          // arrange
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_STEPS", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.env = getEnv()
+          const executions = makeNewmanResult({
+            caseNumbers: "C1",
+            error: true,
+          }).concat(makeNewmanResult({ caseNumbers: "C1" }))
+
+          // act
+          sut.jsonifyResults(executions)
+
+          // assert
+          expect(sut.results).lengthOf(1)
+          // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
+          expect(sut.results[0].status_id).toBe(5)
+        })
+
+        it("resports as an success test case when all steps are success", () => {
+          // arrange
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_STEPS", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.env = getEnv()
+          const executions = makeNewmanResult({ caseNumbers: "C1" }).concat(
+            makeNewmanResult({ caseNumbers: "C1" }),
+          )
+
+          // act
+          sut.jsonifyResults(executions)
+
+          // assert
+          expect(sut.results).lengthOf(1)
+          // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
+          expect(sut.results[0].status_id).toBe(1)
+        })
+      })
+
+      describe("false (default value): reports multipe assertions as multiple test results", () => {
+        it("reports as two test results", () => {
+          // arrange
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_STEPS", "false")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.env = getEnv()
+          const executions = makeNewmanResult({
+            caseNumbers: "C1",
+            error: true,
+          }).concat(makeNewmanResult({ caseNumbers: "C1" }))
+
+          // act
+          sut.jsonifyResults(executions)
+
+          // assert
+          expect(sut.results).lengthOf(2)
+          // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
+          expect(sut.results[0].status_id).toBe(5)
+          expect(sut.results[1].status_id).toBe(1)
+        })
+      })
+    })
+
     describe("User wants to establish connection by title not by case id", () => {
       describe("When TESTRAIL_TITLE_MATCHING env value is `true`", () => {
         it("Newman assertions with title `TestTitle` matched to TestRail test case with `TestTitle`", () => {
