@@ -3,6 +3,10 @@ import TestrailReporter from "../lib/TestrailReporter"
 import getEnv from "../lib/environment"
 import { makeSampleEmitter } from "./utils/emitter"
 import { setEnvVars } from "./utils/env"
+import {
+  makeFakeJsonifyResult,
+  makeTestrailReporterWithFakeApi,
+} from "./utils/fake"
 import makeNewmanResult from "./utils/newman"
 
 describe("TestrailReporter", () => {
@@ -342,6 +346,49 @@ describe("TestrailReporter", () => {
 
         // assert
         expect(sut.results[0].customenvvar).toBe("123")
+      })
+    })
+  })
+
+  describe("pushToTestRail", () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+      vi.unstubAllEnvs()
+    })
+
+    describe("when results are available", () => {
+      it("uses provided title when title is set", () => {
+        // arrange
+        const testTitle = "testTitle"
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.title = testTitle
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.addRun).toHaveBeenCalledWith(
+          testTitle,
+          expect.anything(),
+        )
+      })
+
+      it("uses `${projectName}: Automated YYYY-MM-DD` formmated title when title is not set", () => {
+        // arrange
+        const title = "testProjectName2"
+        const sut = makeTestrailReporterWithFakeApi(vi, {}, title)
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.addRun).toHaveBeenCalledWith(
+          // title,
+          expect.stringContaining(`${title}: Automated`),
+          expect.anything(),
+        )
       })
     })
   })
