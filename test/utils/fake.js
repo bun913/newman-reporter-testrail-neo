@@ -1,8 +1,7 @@
-import TestRailApi from "../../lib/testRailApi"
-import { setEnvVars } from "./env"
 import TestrailReporter from "../../lib/TestrailReporter"
+import TestRailApi from "../../lib/testRailApi"
 import { makeSampleEmitter } from "./emitter"
-
+import { setEnvVars } from "./env"
 
 export const makeFakeRequest = (vi, fakeResponse = { fake: true }) => {
   const mockRequest = vi.fn((method, url, options) => {
@@ -29,11 +28,11 @@ export const makeFakeGetProjectResponse = (options = {}) => {
     is_completed: false,
     name: "testProject",
     show_announcement: true,
-    url: "https://example.com/index.php?/api/v2/get_project/1"
-  };
+    url: "https://example.com/index.php?/api/v2/get_project/1",
+  }
 
-  return { ...defaultResponse, ...options };
-};
+  return { ...defaultResponse, ...options }
+}
 
 // get_run https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/runs/
 export const makeFakeGetRunsResponse = (options = {}) => {
@@ -67,11 +66,11 @@ export const makeFakeGetRunsResponse = (options = {}) => {
     suite_id: 4,
     untested_count: 3,
     updated_on: null,
-    url: "http://<server>/testrail/index.php?/runs/view/81"
-  };
+    url: "http://<server>/testrail/index.php?/runs/view/81",
+  }
 
-  return [{...defaultResponse, ...options}]
-};
+  return [{ ...defaultResponse, ...options }]
+}
 
 // https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/plans/
 export const makeFakeAddPlanEntryResponse = (options = {}) => {
@@ -94,7 +93,7 @@ export const makeFakeAddPlanEntryResponse = (options = {}) => {
         assignedto_id: 1,
         include_all: false,
         case_ids: [1, 2, 3],
-        refs: null
+        refs: null,
       },
       {
         id: 5,
@@ -105,27 +104,27 @@ export const makeFakeAddPlanEntryResponse = (options = {}) => {
         assignedto_id: 2,
         include_all: false,
         case_ids: [1, 2, 3, 5, 8],
-        refs: null
-      }
+        refs: null,
+      },
     ],
     entries: [
       {
         id: "3933d74b-4282-4c1f-be62-a641ab427063",
         run_id: 4,
         name: "Test Run 1, Chrome",
-        description: null
+        description: null,
       },
       {
         id: "f89d5bd0-85b6-4f8c-957c-5f88e522418a",
         run_id: 5,
         name: "Test Run 1, Firefox",
-        description: null
-      }
-    ]
-  };
+        description: null,
+      },
+    ],
+  }
 
-  return { ...defaultResponse, ...options };
-};
+  return { ...defaultResponse, ...options }
+}
 
 // https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/runs/
 export const makeFakeAddRunResponse = (options = {}) => {
@@ -135,11 +134,11 @@ export const makeFakeAddRunResponse = (options = {}) => {
     assignedto_id: 5,
     refs: "SAN-1, SAN-2",
     include_all: false,
-    case_ids: [1, 2, 3, 4, 7, 8]
-  };
+    case_ids: [1, 2, 3, 4, 7, 8],
+  }
 
-  return { ...defaultResponse, ...options };
-};
+  return { ...defaultResponse, ...options }
+}
 
 // https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/results/
 export const makeFakeAddResultsResponse = (options = {}) => {
@@ -149,85 +148,83 @@ export const makeFakeAddResultsResponse = (options = {}) => {
         test_id: 101,
         status_id: 5,
         comment: "This test failed",
-        defects: "TR-7"
+        defects: "TR-7",
       },
       {
         test_id: 102,
         status_id: 1,
         comment: "This test passed",
         elapsed: "5m",
-        version: "1.0 RC1"
+        version: "1.0 RC1",
       },
       {
         test_id: 101,
         assignedto_id: 5,
-        comment: "Assigned this test to Joe"
-      }
-    ]
-  };
+        comment: "Assigned this test to Joe",
+      },
+    ],
+  }
 
   // オプションで結果を上書きまたは追加
   if (options.results) {
     return {
-      results: options.results
-    };
+      results: options.results,
+    }
   }
 
   // 個別の結果をカスタマイズする場合
   return {
     results: defaultResponse.results.map((result, index) => ({
       ...result,
-      ...(options[index] || {})
-    }))
-  };
-};
+      ...(options[index] || {}),
+    })),
+  }
+}
 
 export const makeTestrailReporterWithFakeApi = (
   vi,
-  envOverrids={},
-  projectName="testProject"
+  envOverrids = {},
+  projectName = "testProject",
 ) => {
-  const fakeTestRailApi = makeFakeTestRailApi(vi, makeFakeRequest(vi));
+  const fakeTestRailApi = makeFakeTestRailApi(vi, makeFakeRequest(vi))
   // fake TestRailApiの関数をスタブする
   fakeTestRailApi.getProjectInfo = vi.fn().mockReturnValue({
     getBody: () => {
-      return JSON.stringify(makeFakeGetProjectResponse({
-        name: projectName
-      }))
-    }
+      return JSON.stringify(
+        makeFakeGetProjectResponse({
+          name: projectName,
+        }),
+      )
+    },
   })
   fakeTestRailApi.getRuns = vi.fn().mockReturnValue({
     getBody: () => {
       return JSON.stringify(makeFakeGetRunsResponse())
-    }
+    },
   })
   fakeTestRailApi.getRun = vi.fn().mockReturnValue({
     getBody: () => {
       return JSON.stringify(makeFakeGetRunsResponse()[0])
-    }
+    },
   })
   fakeTestRailApi.addPlanEntry = vi.fn().mockReturnValue({
     getBody: () => {
       return JSON.stringify(makeFakeAddPlanEntryResponse())
-    }
+    },
   })
   fakeTestRailApi.addRun = vi.fn().mockReturnValue({
     getBody: () => {
       return JSON.stringify(makeFakeAddRunResponse())
-    }
+    },
   })
   fakeTestRailApi.addResults = vi.fn().mockReturnValue({
     getBody: () => {
       return JSON.stringify(makeFakeAddResultsResponse())
-    }
+    },
   })
   // envOverridsで環境変数を上書きする
   setEnvVars(vi, envOverrids)
-  const fakeReporter = new TestrailReporter(
-    makeSampleEmitter(vi.fn()),
-    {},
-    {}
-  )
+  const fakeReporter = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
   fakeReporter.testRailApi = fakeTestRailApi
   fakeReporter.env = fakeTestRailApi.env
   return fakeReporter
@@ -236,38 +233,40 @@ export const makeTestrailReporterWithFakeApi = (
 export const makeFakeJsonifyResult = () => {
   return [
     {
-      case_id: '01',
-      comment: 'C01 Status code is 400\n' +
-        'Request: GET https://www.test.com/test/v1\n' +
-        '\n' +
-        'Headers:\n' +
-        'Content-Type: application/json\n' +
-        '\n' +
-        '\n' +
-        '\n' +
-        'Response: 400 Bad Request\n' +
-        'Headers:\n' +
-        'Connection: close\n' +
-        'Body: \n',
+      case_id: "01",
+      comment:
+        "C01 Status code is 400\n" +
+        "Request: GET https://www.test.com/test/v1\n" +
+        "\n" +
+        "Headers:\n" +
+        "Content-Type: application/json\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "Response: 400 Bad Request\n" +
+        "Headers:\n" +
+        "Connection: close\n" +
+        "Body: \n",
       status_id: 1,
-      elapsed: '1s'
+      elapsed: "1s",
     },
     {
-      case_id: '02',
-      comment: 'C02 Status code is 200\n' +
-        'Request: GET https://www.test.com/test/v2\n' +
-        '\n' +
-        'Headers:\n' +
-        'Content-Type: application/json\n' +
-        '\n' +
-        '\n' +
-        '\n' +
-        'Response: 200 OK\n' +
-        'Headers:\n' +
-        'Connection: close\n' +
-        'Body: \n',
+      case_id: "02",
+      comment:
+        "C02 Status code is 200\n" +
+        "Request: GET https://www.test.com/test/v2\n" +
+        "\n" +
+        "Headers:\n" +
+        "Content-Type: application/json\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "Response: 200 OK\n" +
+        "Headers:\n" +
+        "Connection: close\n" +
+        "Body: \n",
       status_id: 5,
-      elapsed: '1s'
-    }
+      elapsed: "1s",
+    },
   ]
 }

@@ -1,385 +1,387 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import TestrailReporter from "../lib/TestrailReporter";
-import getEnv from "../lib/environment";
-import { makeSampleEmitter } from "./utils/emitter";
-import { setEnvVars } from "./utils/env";
-import makeNewmanResult from "./utils/newman";
-import { makeFakeJsonifyResult, makeTestrailReporterWithFakeApi } from "./utils/fake";
-
+import { afterEach, describe, expect, it, vi } from "vitest"
+import TestrailReporter from "../lib/TestrailReporter"
+import getEnv from "../lib/environment"
+import { makeSampleEmitter } from "./utils/emitter"
+import { setEnvVars } from "./utils/env"
+import {
+  makeFakeJsonifyResult,
+  makeTestrailReporterWithFakeApi,
+} from "./utils/fake"
+import makeNewmanResult from "./utils/newman"
 
 describe("TestrailReporter", () => {
   describe("onComplete", () => {
     describe("raise error when required options are missing", () => {
       afterEach(() => {
-        vi.restoreAllMocks();
-        vi.unstubAllEnvs();
-      });
+        vi.restoreAllMocks()
+        vi.unstubAllEnvs()
+      })
       it("raise error when domain option is missing", () => {
         // arrange
-        const erroSpy = vi.spyOn(console, "error");
-        vi.stubEnv("TESTRAIL_USERNAME", "username");
-        vi.stubEnv("TESTRAIL_APIKEY", "apikey");
-        vi.stubEnv("TESTRAIL_PROJECTID", "projectid");
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
+        const erroSpy = vi.spyOn(console, "error")
+        vi.stubEnv("TESTRAIL_USERNAME", "username")
+        vi.stubEnv("TESTRAIL_APIKEY", "apikey")
+        vi.stubEnv("TESTRAIL_PROJECTID", "projectid")
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
 
         // act
-        sut.onComplete();
+        sut.onComplete()
 
         // assert
         expect(erroSpy).toHaveBeenCalledWith(
           expect.stringContaining(
-            "A required environment variable domain was not found."
-          )
-        );
-      });
+            "A required environment variable domain was not found.",
+          ),
+        )
+      })
 
       it("raise error when username option is missing", () => {
         // arrange
-        const erroSpy = vi.spyOn(console, "error");
-        vi.stubEnv("TESTRAIL_DOMAIN", "domain");
-        vi.stubEnv("TESTRAIL_APIKEY", "apikey");
-        vi.stubEnv("TESTRAIL_PROJECTID", "projectid");
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
+        const erroSpy = vi.spyOn(console, "error")
+        vi.stubEnv("TESTRAIL_DOMAIN", "domain")
+        vi.stubEnv("TESTRAIL_APIKEY", "apikey")
+        vi.stubEnv("TESTRAIL_PROJECTID", "projectid")
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
 
         // act
-        sut.onComplete();
+        sut.onComplete()
 
         // assert
         expect(erroSpy).toHaveBeenCalledWith(
           expect.stringContaining(
-            "A required environment variable username was not found."
-          )
-        );
-      });
+            "A required environment variable username was not found.",
+          ),
+        )
+      })
 
       it("raise error when apikey option is missing", () => {
         // arrange
-        const erroSpy = vi.spyOn(console, "error");
-        vi.stubEnv("TESTRAIL_DOMAIN", "domain");
-        vi.stubEnv("TESTRAIL_USERNAME", "username");
-        vi.stubEnv("TESTRAIL_PROJECTID", "projectid");
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
+        const erroSpy = vi.spyOn(console, "error")
+        vi.stubEnv("TESTRAIL_DOMAIN", "domain")
+        vi.stubEnv("TESTRAIL_USERNAME", "username")
+        vi.stubEnv("TESTRAIL_PROJECTID", "projectid")
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
 
         // act
-        sut.onComplete();
+        sut.onComplete()
 
         // assert
         expect(erroSpy).toHaveBeenCalledWith(
           expect.stringContaining(
-            "A required environment variable apikey was not found."
-          )
-        );
-      });
+            "A required environment variable apikey was not found.",
+          ),
+        )
+      })
 
       it("raise error when projectid option is missing", () => {
         // arrange
-        const erroSpy = vi.spyOn(console, "error");
-        vi.stubEnv("TESTRAIL_DOMAIN", "domain");
-        vi.stubEnv("TESTRAIL_USERNAME", "username");
-        vi.stubEnv("TESTRAIL_APIKEY", "apikey");
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
+        const erroSpy = vi.spyOn(console, "error")
+        vi.stubEnv("TESTRAIL_DOMAIN", "domain")
+        vi.stubEnv("TESTRAIL_USERNAME", "username")
+        vi.stubEnv("TESTRAIL_APIKEY", "apikey")
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
 
         // act
-        sut.onComplete();
+        sut.onComplete()
 
         // assert
         expect(erroSpy).toHaveBeenCalledWith(
           expect.stringContaining(
-            "A required environment variable projectId was not found."
-          )
-        );
-      });
-    });
-  });
+            "A required environment variable projectId was not found.",
+          ),
+        )
+      })
+    })
+  })
 
   describe("jsonifyResults", () => {
     afterEach(() => {
-      vi.restoreAllMocks();
-      vi.unstubAllEnvs();
-    });
+      vi.restoreAllMocks()
+      vi.unstubAllEnvs()
+    })
 
     describe("converts newwman test results to TestRail-compatible JSON format", () => {
       it("converts a test result to one TestRail test run", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult();
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult()
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(1);
-        expect(sut.results[0].case_id).toBe("01");
-      });
+        expect(sut.results).lengthOf(1)
+        expect(sut.results[0].case_id).toBe("01")
+      })
 
       it("converts two mapped test case to two TestRail testruns", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult({ caseNumbers: "C01 C02" });
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({ caseNumbers: "C01 C02" })
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(2);
-        expect(sut.results[0].case_id).toBe("01");
-        expect(sut.results[1].case_id).toBe("02");
-      });
+        expect(sut.results).lengthOf(2)
+        expect(sut.results[0].case_id).toBe("01")
+        expect(sut.results[1].case_id).toBe("02")
+      })
 
       it("converts two test cases to two TestRail test runs", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
         const executions = makeNewmanResult().concat(
-          makeNewmanResult({ caseNumbers: "C02" })
-        );
+          makeNewmanResult({ caseNumbers: "C02" }),
+        )
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(2);
-        expect(sut.results[0].case_id).toBe("01");
-        expect(sut.results[1].case_id).toBe("02");
-      });
-    });
+        expect(sut.results).lengthOf(2)
+        expect(sut.results[0].case_id).toBe("01")
+        expect(sut.results[1].case_id).toBe("02")
+      })
+    })
 
     describe("failed test case handling", () => {
       it("converts a failed test case to a failed TestRail test run", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult({ error: true });
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({ error: true })
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(1);
-        expect(sut.results[0].case_id).toBe("01");
+        expect(sut.results).lengthOf(1)
+        expect(sut.results[0].case_id).toBe("01")
         // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
-        expect(sut.results[0].status_id).toBe(5);
-      });
-    });
+        expect(sut.results[0].status_id).toBe(5)
+      })
+    })
 
     describe("skipped test case handling", () => {
       it("converts a skipped test case to a skipped TestRail test run", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult({ skipped: true });
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({ skipped: true })
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(1);
-        expect(sut.results[0].case_id).toBe("01");
+        expect(sut.results).lengthOf(1)
+        expect(sut.results[0].case_id).toBe("01")
         // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
-        expect(sut.results[0].status_id).toBe(4);
-      });
-    });
+        expect(sut.results[0].status_id).toBe(4)
+      })
+    })
 
     describe("umarked test case handling", () => {
       it("skip when not including test caseid top of the test case title", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult({ caseNumbers: "" });
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({ caseNumbers: "" })
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(0);
-      });
-    });
+        expect(sut.results).lengthOf(0)
+      })
+    })
 
     describe("TESTRAIL_STEPS env value is", () => {
       describe("true: reports multiple assertions as a steps if they have same test case ids", () => {
         it("reports as an failed test case when one step fails, even if others succeed", () => {
           // arrange
-          setEnvVars(vi);
-          vi.stubEnv("TESTRAIL_STEPS", "true");
-          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-          sut.env = getEnv();
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_STEPS", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.env = getEnv()
           const executions = makeNewmanResult({
             caseNumbers: "C1",
             error: true,
-          }).concat(makeNewmanResult({ caseNumbers: "C1" }));
+          }).concat(makeNewmanResult({ caseNumbers: "C1" }))
 
           // act
-          sut.jsonifyResults(executions);
+          sut.jsonifyResults(executions)
 
           // assert
-          expect(sut.results).lengthOf(1);
+          expect(sut.results).lengthOf(1)
           // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
-          expect(sut.results[0].status_id).toBe(5);
-        });
+          expect(sut.results[0].status_id).toBe(5)
+        })
 
         it("resports as an success test case when all steps are success", () => {
           // arrange
-          setEnvVars(vi);
-          vi.stubEnv("TESTRAIL_STEPS", "true");
-          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-          sut.env = getEnv();
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_STEPS", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.env = getEnv()
           const executions = makeNewmanResult({ caseNumbers: "C1" }).concat(
-            makeNewmanResult({ caseNumbers: "C1" })
-          );
+            makeNewmanResult({ caseNumbers: "C1" }),
+          )
 
           // act
-          sut.jsonifyResults(executions);
+          sut.jsonifyResults(executions)
 
           // assert
-          expect(sut.results).lengthOf(1);
+          expect(sut.results).lengthOf(1)
           // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
-          expect(sut.results[0].status_id).toBe(1);
-        });
-      });
+          expect(sut.results[0].status_id).toBe(1)
+        })
+      })
 
       describe("false (default value): reports multipe assertions as multiple test results", () => {
         it("reports as two test results", () => {
           // arrange
-          setEnvVars(vi);
-          vi.stubEnv("TESTRAIL_STEPS", "false");
-          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-          sut.env = getEnv();
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_STEPS", "false")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+          sut.env = getEnv()
           const executions = makeNewmanResult({
             caseNumbers: "C1",
             error: true,
-          }).concat(makeNewmanResult({ caseNumbers: "C1" }));
+          }).concat(makeNewmanResult({ caseNumbers: "C1" }))
 
           // act
-          sut.jsonifyResults(executions);
+          sut.jsonifyResults(executions)
 
           // assert
-          expect(sut.results).lengthOf(2);
+          expect(sut.results).lengthOf(2)
           // status_id: https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/statuses/
-          expect(sut.results[0].status_id).toBe(5);
-          expect(sut.results[1].status_id).toBe(1);
-        });
-      });
-    });
+          expect(sut.results[0].status_id).toBe(5)
+          expect(sut.results[1].status_id).toBe(1)
+        })
+      })
+    })
 
     describe("User wants to establish connection by title not by case id", () => {
       describe("When TESTRAIL_TITLE_MATCHING env value is `true`", () => {
         it("Newman assertions with title `TestTitle` matched to TestRail test case with `TestTitle`", () => {
           // arrange
-          setEnvVars(vi);
-          vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true");
-          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
           sut.testRailApi.getCases = vi
             .fn()
-            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }]);
-          sut.env = getEnv();
-          const executions = makeNewmanResult({ assertionName: "TestTitle" });
+            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }])
+          sut.env = getEnv()
+          const executions = makeNewmanResult({ assertionName: "TestTitle" })
 
           // act
-          sut.jsonifyResults(executions);
+          sut.jsonifyResults(executions)
 
           // assert
-          expect(sut.results).lengthOf(1);
-          expect(sut.results[0].case_id).toBe("1");
-        });
+          expect(sut.results).lengthOf(1)
+          expect(sut.results[0].case_id).toBe("1")
+        })
 
         it("Newman assertions with title `NoMatchedTitle` not matched to TestRail test case with `TestTitle`", () => {
           // arrange
-          setEnvVars(vi);
-          vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true");
-          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
+          setEnvVars(vi)
+          vi.stubEnv("TESTRAIL_TITLE_MATCHING", "true")
+          const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
           sut.testRailApi.getCases = vi
             .fn()
-            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }]);
-          sut.env = getEnv();
+            .mockReturnValueOnce([{ id: 1, title: "TestTitle" }])
+          sut.env = getEnv()
           const executions = makeNewmanResult({
             assertionName: "NoMatchedTitle",
-          });
+          })
 
           // act
-          sut.jsonifyResults(executions);
+          sut.jsonifyResults(executions)
 
           // assert
-          expect(sut.results).lengthOf(0);
-        });
-      });
-    });
+          expect(sut.results).lengthOf(0)
+        })
+      })
+    })
 
     describe("test rail v1 API", () => {
       it("works for TestRail v1 api", () => {
         // arrange
-        setEnvVars(vi);
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult({ tldOnly: true });
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({ tldOnly: true })
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results).lengthOf(1);
-        expect(sut.results[0].case_id).toBe("01");
-        expect(sut.results[0].status_id).toBe(1);
-      });
-    });
+        expect(sut.results).lengthOf(1)
+        expect(sut.results[0].case_id).toBe("01")
+        expect(sut.results[0].status_id).toBe(1)
+      })
+    })
 
     describe("custome env value", () => {
       it("include a custom_key_value in result json when TESTRAIL_CUSTOM_$HOGE setted", () => {
         // arrange
-        setEnvVars(vi);
-        vi.stubEnv("TESTRAIL_CUSTOM_customenvvar", "123");
-        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {});
-        sut.env = getEnv();
-        const executions = makeNewmanResult({ tldOnly: true });
+        setEnvVars(vi)
+        vi.stubEnv("TESTRAIL_CUSTOM_customenvvar", "123")
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({ tldOnly: true })
 
         // act
-        sut.jsonifyResults(executions);
+        sut.jsonifyResults(executions)
 
         // assert
-        expect(sut.results[0].customenvvar).toBe("123");
-      });
-    });
-  });
+        expect(sut.results[0].customenvvar).toBe("123")
+      })
+    })
+  })
 
   describe("pushToTestRail", () => {
     afterEach(() => {
-      vi.restoreAllMocks();
-      vi.unstubAllEnvs();
-    });
+      vi.restoreAllMocks()
+      vi.unstubAllEnvs()
+    })
 
     describe("when results are available", () => {
       it("uses provided title when title is set", () => {
         // arrange
-        const testTitle = "testTitle";
-        const sut = makeTestrailReporterWithFakeApi(vi);
-        sut.env.title = testTitle;
+        const testTitle = "testTitle"
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.title = testTitle
         sut.results = makeFakeJsonifyResult()
-        
+
         // act
-        sut.pushToTestrail({summary: {}})
+        sut.pushToTestrail({ summary: {} })
 
         // assert
         expect(sut.testRailApi.addRun).toHaveBeenCalledWith(
           testTitle,
           expect.anything(),
         )
-      });
+      })
 
       it("uses `${projectName}: Automated YYYY-MM-DD` formmated title when title is not set", () => {
         // arrange
-        const title = "testProjectName2";
-        const sut = makeTestrailReporterWithFakeApi(vi, {}, title);
+        const title = "testProjectName2"
+        const sut = makeTestrailReporterWithFakeApi(vi, {}, title)
         sut.results = makeFakeJsonifyResult()
-        
+
         // act
-        sut.pushToTestrail({summary: {}})
+        sut.pushToTestrail({ summary: {} })
 
         // assert
         expect(sut.testRailApi.addRun).toHaveBeenCalledWith(
@@ -388,7 +390,6 @@ describe("TestrailReporter", () => {
           expect.anything(),
         )
       })
-
-    });
-  });
-});
+    })
+  })
+})
