@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { setEnvVars } from "../utils/env"
-import { makeFakeRequest, makeFakeTestRailApi } from "../utils/request"
+import { makeFakeRequest, makeFakeTestRailApi } from "../utils/fake"
 
 describe("TestRailApi", () => {
   afterEach(() => {
@@ -195,5 +195,4 @@ describe("TestRailApi", () => {
     })
   })
 
-  // TODO: refactor pushToTestrail and write tests using fakes
 })
