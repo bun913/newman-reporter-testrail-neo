@@ -8,6 +8,34 @@ describe("TestRailApi", () => {
     vi.unstubAllEnvs()
   })
 
+  describe("constructor", () => {
+    it("adds X-API-IDENT header when betaApi is set to true", () => {
+      // arrange
+      const fakeRequest = makeFakeRequest(vi)
+
+      // act
+      const sut = makeFakeTestRailApi(vi, fakeRequest, {
+        TESTRAIL_BETA_API: "true",
+      })
+
+      // assert
+      expect(sut.headers["X-API-IDENT"]).toBe("BETA")
+    })
+
+    it("does not add X-API-IDENT header when betaApi is set to false", () => {
+      // arrange
+      const fakeRequest = makeFakeRequest(vi)
+
+      // act
+      const sut = makeFakeTestRailApi(vi, fakeRequest, {
+        TESTRAIL_BETA_API: "false",
+      })
+
+      // assert
+      expect(sut.headers["X-API-IDENT"]).toBeUndefined()
+    })
+  })
+
   describe("getProjectInfo", () => {
     it("sends reqeust to DOMAIN/api/v2/get_project/testProjectId when suiteId is not set", () => {
       // arrange
@@ -136,62 +164,94 @@ describe("TestRailApi", () => {
       )
     })
 
-    describe("addRun", () => {
-      it("sends request to DOMAIN/api/v2/add_run/:projectId", () => {
-        // arrange
-        const fakeRequest = makeFakeRequest(vi)
-        const sut = makeFakeTestRailApi(vi, fakeRequest, {
-          TESTRAIL_PROJECTID: "123",
+    it("handles pagination when there are multiple pages of cases", () => {
+      // arrange
+      const fakeRequest = vi
+        .fn()
+        .mockReturnValueOnce({
+          getBody: () =>
+            JSON.stringify({
+              _links: { next: "/api/v2/get_cases/123&offset=100" },
+              cases: [{ id: 1, title: "case1" }],
+            }),
         })
-
-        // act
-        sut.addRun("title", [])
-
-        // assert
-        expect(sut.request).toHaveBeenCalledWith(
-          "POST",
-          "https://example.com/index.php?/api/v2/add_run/123",
-          expect.anything(),
-        )
-      })
-    })
-
-    describe("addPlanEntry", () => {
-      it("sends request to DOMAIN/api/v2/add_plan_entry/:planId", () => {
-        // arrange
-        const fakeRequest = makeFakeRequest(vi)
-        const sut = makeFakeTestRailApi(vi, fakeRequest, {
-          TESTRAIL_PLANID: "123",
+        .mockReturnValueOnce({
+          getBody: () =>
+            JSON.stringify({
+              _links: { next: null },
+              cases: [{ id: 2, title: "case2" }],
+            }),
         })
-
-        // act
-        sut.addPlanEntry("title", [])
-
-        // assert
-        expect(sut.request).toHaveBeenCalledWith(
-          "POST",
-          "https://example.com/index.php?/api/v2/add_plan_entry/123",
-          expect.anything(),
-        )
+      const sut = makeFakeTestRailApi(vi, fakeRequest, {
+        TESTRAIL_PROJECTID: "123",
       })
+
+      // act
+      const result = sut.getCases()
+
+      // assert
+      expect(fakeRequest).toHaveBeenCalledTimes(2)
+      expect(result).toEqual([
+        { id: 1, title: "case1" },
+        { id: 2, title: "case2" },
+      ])
     })
-
-    describe("closeRun", () => {
-      it("sends request to DOMAIN/api/v2/close_run/:runId", () => {
-        // arrange
-        const fakeRequest = makeFakeRequest(vi)
-        const sut = makeFakeTestRailApi(vi, fakeRequest)
-
-        // act
-        sut.closeRun("456")
-
-        // assert
-        expect(sut.request).toHaveBeenCalledWith(
-          "POST",
-          "https://example.com/index.php?/api/v2/close_run/456",
-          expect.anything(),
-        )
+  })
+  describe("addRun", () => {
+    it("sends request to DOMAIN/api/v2/add_run/:projectId", () => {
+      // arrange
+      const fakeRequest = makeFakeRequest(vi)
+      const sut = makeFakeTestRailApi(vi, fakeRequest, {
+        TESTRAIL_PROJECTID: "123",
       })
+
+      // act
+      sut.addRun("title", [])
+
+      // assert
+      expect(sut.request).toHaveBeenCalledWith(
+        "POST",
+        "https://example.com/index.php?/api/v2/add_run/123",
+        expect.anything(),
+      )
+    })
+  })
+
+  describe("addPlanEntry", () => {
+    it("sends request to DOMAIN/api/v2/add_plan_entry/:planId", () => {
+      // arrange
+      const fakeRequest = makeFakeRequest(vi)
+      const sut = makeFakeTestRailApi(vi, fakeRequest, {
+        TESTRAIL_PLANID: "123",
+      })
+
+      // act
+      sut.addPlanEntry("title", [])
+
+      // assert
+      expect(sut.request).toHaveBeenCalledWith(
+        "POST",
+        "https://example.com/index.php?/api/v2/add_plan_entry/123",
+        expect.anything(),
+      )
+    })
+  })
+
+  describe("closeRun", () => {
+    it("sends request to DOMAIN/api/v2/close_run/:runId", () => {
+      // arrange
+      const fakeRequest = makeFakeRequest(vi)
+      const sut = makeFakeTestRailApi(vi, fakeRequest)
+
+      // act
+      sut.closeRun("456")
+
+      // assert
+      expect(sut.request).toHaveBeenCalledWith(
+        "POST",
+        "https://example.com/index.php?/api/v2/close_run/456",
+        expect.anything(),
+      )
     })
   })
 })
