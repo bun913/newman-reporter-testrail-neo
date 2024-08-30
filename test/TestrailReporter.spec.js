@@ -425,31 +425,34 @@ describe("TestrailReporter", () => {
       })
     })
 
-    describe("when project id is set", () => {
+    describe("when testPlan id is set", () => {
       it("add new test-run under the project and use the tet-run id to add results", () => {
         // arrange
-        const projectId = "456"
+        const testPlanId = "123"
         const sut = makeTestrailReporterWithFakeApi(vi)
-        sut.env.projectId = projectId
+        sut.env.testPlanId = testPlanId
         sut.results = makeFakeJsonifyResult()
 
         // act
         sut.pushToTestrail({ summary: {} })
 
         // assert
-        expect(sut.testRailApi.addRun).toHaveBeenCalledWith(
+        expect(sut.testRailApi.addPlanEntry).toHaveBeenCalledWith(
           expect.anything(),
           expect.anything(),
         )
-        // TODO: I want to validate the runid is used to add results
+        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+        )
       })
 
-      it("runId is used if both project-id and run-id are set", () => {
+      it("runId is used if both testPlan and run-id are set", () => {
         // arrange
-        const projectId = "456"
-        const runId = "123"
+        const testPlanId = "123"
+        const runId = "456"
         const sut = makeTestrailReporterWithFakeApi(vi)
-        sut.env.projectId = projectId
+        sut.env.testPlanId = testPlanId
         sut.env.runId = runId
         sut.results = makeFakeJsonifyResult()
 
@@ -457,10 +460,7 @@ describe("TestrailReporter", () => {
         sut.pushToTestrail({ summary: {} })
 
         // assert
-        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(
-          runId,
-          expect.anything(),
-        )
+        expect(sut.testRailApi.addPlanEntry).not.toHaveBeenCalled()
       })
     })
 
