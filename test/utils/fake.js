@@ -299,3 +299,25 @@ export const makeFakeJsonifyResult = () => {
     },
   ]
 }
+
+// モックの execution オブジェクト生成関数
+export const makeFakeExecution = (overrides = {}) => ({
+  request: {
+    method: "GET",
+    url: {
+      protocol: "https",
+      host: ["example", "com"],
+      path: ["api", "v1"],
+      query: { members: [] },
+    },
+    headers: [{ key: "Content-Type", value: "application/json" }],
+    body: "",
+  },
+  response: {
+    code: 200,
+    status: "OK",
+    headers: [{ key: "Content-Type", value: "application/json" }],
+    stream: Buffer.from(""),
+  },
+  ...overrides,
+})
