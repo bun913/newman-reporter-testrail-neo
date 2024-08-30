@@ -17,6 +17,8 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm run test-ci
+      - name: Smoke test
+        run: node lib/index.js
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
