@@ -34,28 +34,28 @@ export const makeFakeGetProjectResponse = (options = {}) => {
   return { ...defaultResponse, ...options }
 }
 
-// export 
+// export
 export const makeFakeGetRunsResponse = (options = {}) => {
   const defaultReponse = {
-    "offset": 0,
-    "limit": 250,
-    "size": 250,
-    "_links": {
-        "next": "/api/v2/get_cases/1&limit=250&offset=250",
-        "prev": null
+    offset: 0,
+    limit: 250,
+    size: 250,
+    _links: {
+      next: "/api/v2/get_cases/1&limit=250&offset=250",
+      prev: null,
     },
-    "runs": [
-        {
-            "id": 81,
-            "name": "Test run 1",
-        },
-        {
-            "id": 82,
-            "name": "Test run 2",
-        },
-    ]
+    runs: [
+      {
+        id: 81,
+        name: "Test run 1",
+      },
+      {
+        id: 82,
+        name: "Test run 2",
+      },
+    ],
   }
-  return { ...defaultReponse, ...options}
+  return { ...defaultReponse, ...options }
 }
 
 // get_run https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/runs/

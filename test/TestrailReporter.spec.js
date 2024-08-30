@@ -404,7 +404,10 @@ describe("TestrailReporter", () => {
         sut.pushToTestrail({ summary: {} })
 
         // assert
-        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(runId, expect.anything())
+        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(
+          runId,
+          expect.anything(),
+        )
       })
 
       it("get latest runId from Testrail when runId is equal to 'latest'", () => {
@@ -454,7 +457,10 @@ describe("TestrailReporter", () => {
         sut.pushToTestrail({ summary: {} })
 
         // assert
-        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(runId, expect.anything())
+        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(
+          runId,
+          expect.anything(),
+        )
       })
     })
 
