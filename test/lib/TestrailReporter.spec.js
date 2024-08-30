@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import TestrailReporter from "../lib/TestrailReporter"
-import getEnv from "../lib/environment"
-import { makeSampleEmitter } from "./utils/emitter"
-import { setEnvVars } from "./utils/env"
+import TestrailReporter from "../../lib/TestrailReporter"
+import getEnv from "../../lib/environment"
+import { makeSampleEmitter } from "../utils/emitter"
+import { setEnvVars } from "../utils/env"
 import {
   makeFakeJsonifyResult,
   makeTestrailReporterWithFakeApi,
-} from "./utils/fake"
-import makeNewmanResult from "./utils/newman"
+} from "../utils/fake"
+import makeNewmanResult from "../utils/newman"
 
 describe("TestrailReporter", () => {
   describe("onComplete", () => {
