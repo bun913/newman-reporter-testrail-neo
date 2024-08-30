@@ -491,5 +491,22 @@ describe("TestrailReporter", () => {
         expect(sut.testRailApi.closeRun).not.toHaveBeenCalled()
       })
     })
+
+    describe("when no results are available", () => {
+      it("does not call any TestRail API", () => {
+        // arrange
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.results = []
+        const consoleSpy = vi.spyOn(console, "error")
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(consoleSpy).toHaveBeenCalledWith(
+          "\nnewman-reporter-testrail-neo: No test cases were found.",
+        )
+      })
+    })
   })
 })
