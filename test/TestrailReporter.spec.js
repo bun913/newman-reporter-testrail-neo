@@ -391,5 +391,99 @@ describe("TestrailReporter", () => {
         )
       })
     })
+
+    describe("when runId is set", () => {
+      it("uses provided runId when runId environemnt variable is set", () => {
+        // arrange
+        const runId = "123"
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.runId = runId
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(runId, expect.anything())
+      })
+
+      it("get latest runId from Testrail when runId is equal to 'latest'", () => {
+        // arrange
+        const runId = "latest"
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.runId = runId
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.getRuns).toHaveBeenCalled()
+      })
+    })
+
+    describe("when project id is set", () => {
+      it("add new test-run under the project and use the tet-run id to add results", () => {
+        // arrange
+        const projectId = "456"
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.projectId = projectId
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.addRun).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+        )
+        // TODO: I want to validate the runid is used to add results
+      })
+
+      it("runId is used if both project-id and run-id are set", () => {
+        // arrange
+        const projectId = "456"
+        const runId = "123"
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.projectId = projectId
+        sut.env.runId = runId
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.addResults).toHaveBeenCalledWith(runId, expect.anything())
+      })
+    })
+
+    describe("when closeRun is set", () => {
+      it("close the run when closeRun is not set to 'false'", () => {
+        // arrange
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.closeRun = "true"
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.closeRun).toHaveBeenCalled()
+      })
+
+      it("does not close the run when closeRun is set to 'false'", () => {
+        // arrange
+        const sut = makeTestrailReporterWithFakeApi(vi)
+        sut.env.closeRun = "false"
+        sut.results = makeFakeJsonifyResult()
+
+        // act
+        sut.pushToTestrail({ summary: {} })
+
+        // assert
+        expect(sut.testRailApi.closeRun).not.toHaveBeenCalled()
+      })
+    })
   })
 })

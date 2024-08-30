@@ -34,8 +34,32 @@ export const makeFakeGetProjectResponse = (options = {}) => {
   return { ...defaultResponse, ...options }
 }
 
-// get_run https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/runs/
+// export 
 export const makeFakeGetRunsResponse = (options = {}) => {
+  const defaultReponse = {
+    "offset": 0,
+    "limit": 250,
+    "size": 250,
+    "_links": {
+        "next": "/api/v2/get_cases/1&limit=250&offset=250",
+        "prev": null
+    },
+    "runs": [
+        {
+            "id": 81,
+            "name": "Test run 1",
+        },
+        {
+            "id": 82,
+            "name": "Test run 2",
+        },
+    ]
+  }
+  return { ...defaultReponse, ...options}
+}
+
+// get_run https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/runs/
+export const makeFakeGetRunResponse = (options = {}) => {
   const defaultResponse = {
     assignedto_id: 6,
     blocked_count: 0,
@@ -69,7 +93,7 @@ export const makeFakeGetRunsResponse = (options = {}) => {
     url: "http://<server>/testrail/index.php?/runs/view/81",
   }
 
-  return [{ ...defaultResponse, ...options }]
+  return { ...defaultResponse, ...options }
 }
 
 // https://docs.testrail.techmatrix.jp/testrail/docs/702/api/reference/plans/
@@ -204,7 +228,7 @@ export const makeTestrailReporterWithFakeApi = (
   })
   fakeTestRailApi.getRun = vi.fn().mockReturnValue({
     getBody: () => {
-      return JSON.stringify(makeFakeGetRunsResponse()[0])
+      return JSON.stringify(makeFakeGetRunResponse())
     },
   })
   fakeTestRailApi.addPlanEntry = vi.fn().mockReturnValue({
@@ -218,6 +242,11 @@ export const makeTestrailReporterWithFakeApi = (
     },
   })
   fakeTestRailApi.addResults = vi.fn().mockReturnValue({
+    getBody: () => {
+      return JSON.stringify(makeFakeAddResultsResponse())
+    },
+  })
+  fakeTestRailApi.closeRun = vi.fn().mockReturnValue({
     getBody: () => {
       return JSON.stringify(makeFakeAddResultsResponse())
     },
