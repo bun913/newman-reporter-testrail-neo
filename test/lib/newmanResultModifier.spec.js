@@ -31,7 +31,7 @@ describe("NewmanResultModifier", () => {
       const executions = makeNewmanResult()
       const sut = new NewmanResultModifier("false", fakeApi, executions)
       // act
-      const result = sut.addTestCaseIdsToAssertions()
+      const result = sut.addTestCaseIdsToAssertionsIfNeeded()
       // assert
       expect(result).toEqual(executions)
     })
@@ -50,7 +50,7 @@ describe("NewmanResultModifier", () => {
       const sut = new NewmanResultModifier("true", fakeApi, multiCaseExecutions)
 
       // act
-      const results = sut.addTestCaseIdsToAssertions()
+      const results = sut.addTestCaseIdsToAssertionsIfNeeded()
       // assert
       expect(results[0].assertions[0].assertion).toEqual("C1 case1")
       expect(results[1].assertions[0].assertion).toEqual("C2 case2")
