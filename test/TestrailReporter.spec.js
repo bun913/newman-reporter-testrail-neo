@@ -508,5 +508,52 @@ describe("TestrailReporter", () => {
         )
       })
     })
+
+    describe("getIncludingAssertionsExecutionsOnly", () => {
+      it("returns 1 executions when one has assertions and the other dose not have assertions", () => {
+        // arrange
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({
+          assertionName: "case1",
+        })
+        const multiCaseExecutions = executions.concat(
+          makeNewmanResult({
+            assertionName: "case2",
+          }),
+        )
+        multiCaseExecutions[1].assertions = []
+
+        // act
+        const results =
+          sut.getAssertionsIncludingAssertionsOnly(multiCaseExecutions)
+
+        // assert
+        expect(results).toHaveLength(1)
+      })
+
+      it("returns 2 executions when both have assertions", () => {
+        // arrange
+        setEnvVars(vi)
+        const sut = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
+        sut.env = getEnv()
+        const executions = makeNewmanResult({
+          assertionName: "case1",
+        })
+        const multiCaseExecutions = executions.concat(
+          makeNewmanResult({
+            assertionName: "case2",
+          }),
+        )
+
+        // act
+        const results =
+          sut.getAssertionsIncludingAssertionsOnly(multiCaseExecutions)
+
+        // assert
+        expect(results).toHaveLength(2)
+      })
+    })
   })
 })

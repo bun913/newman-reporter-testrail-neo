@@ -1,0 +1,42 @@
+{
+  "info": {
+    "_postman_id": "hoge",
+    "name": "UseTestTitleTest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "2"
+  },
+  "item": [
+    {
+      "name": "Get",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"MatchIfTestTitleEnvIsSettedWithoutCaseId1\", function () {",
+              "    pm.expect(pm.response.code).to.be.eq(200);",
+              "});",
+              "",
+              "pm.test(\"MatchIfTestTitleEnvIsSettedWithoutCaseId2\", function () {",
+              "    pm.expect(pm.response.code).to.be.eq(200);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://github.com/bun913/newman-reporter-neo",
+          "protocol": "https",
+          "host": ["github", "com"],
+          "path": ["bun913", "newman-reporter-neo"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
