@@ -321,3 +321,10 @@ export const makeFakeExecution = (overrides = {}) => ({
   },
   ...overrides,
 })
+
+export const makeFakeAssertion = (name = "C1 test", skipped = false) => {
+  return {
+    assertion: name,
+    skipped,
+  }
+}
