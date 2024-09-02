@@ -205,7 +205,7 @@ export const makeFakeAddResultsResponse = (options = {}) => {
   }
 }
 
-export const makeTestrailReporterWithFakeApi = (
+export const makeAllFakeApi = (
   vi,
   envOverrids = {},
   projectName = "testProject",
@@ -251,6 +251,16 @@ export const makeTestrailReporterWithFakeApi = (
       return JSON.stringify(makeFakeAddResultsResponse())
     },
   })
+  setEnvVars(vi, envOverrids)
+  return fakeTestRailApi
+}
+
+export const makeTestrailReporterWithFakeApi = (
+  vi,
+  envOverrids = {},
+  projectName = "testProject",
+) => {
+  const fakeTestRailApi = makeAllFakeApi(vi, envOverrids, projectName)
   // envOverridsで環境変数を上書きする
   setEnvVars(vi, envOverrids)
   const fakeReporter = new TestrailReporter(makeSampleEmitter(vi.fn()), {}, {})
@@ -334,4 +344,63 @@ export const makeFakeAssertion = ({
     error,
     response,
   }
+}
+
+export const makeFakeJsonfiyResult = () => {
+  return [
+    {
+      case_id: "1",
+      comment:
+        "C1 C2 C3 Status code is 400\n" +
+        "Request: GET https://www.test.com/test/v1\n" +
+        "\n" +
+        "Headers:\n" +
+        "Content-Type: application/json\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "Response: 400 Bad Request\n" +
+        "Headers:\n" +
+        "Connection: close\n" +
+        "Body: \n",
+      status_id: 1,
+      elapsed: "1s",
+    },
+    {
+      case_id: "2",
+      comment:
+        "C1 C2 C3 Status code is 400\n" +
+        "Request: GET https://www.test.com/test/v1\n" +
+        "\n" +
+        "Headers:\n" +
+        "Content-Type: application/json\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "Response: 400 Bad Request\n" +
+        "Headers:\n" +
+        "Connection: close\n" +
+        "Body: \n",
+      status_id: 1,
+      elapsed: "1s",
+    },
+    {
+      case_id: "3",
+      comment:
+        "C1 C2 C3 Status code is 400\n" +
+        "Request: GET https://www.test.com/test/v1\n" +
+        "\n" +
+        "Headers:\n" +
+        "Content-Type: application/json\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "Response: 400 Bad Request\n" +
+        "Headers:\n" +
+        "Connection: close\n" +
+        "Body: \n",
+      status_id: 1,
+      elapsed: "1s",
+    },
+  ]
 }
