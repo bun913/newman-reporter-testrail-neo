@@ -1,6 +1,6 @@
 {
   "name": "newman-reporter-testrail-neo",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "TestRail reporter for Newman",
   "main": "lib/index.js",
   "scripts": {
