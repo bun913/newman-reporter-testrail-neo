@@ -40,6 +40,7 @@ jobs:
       - name: Commit updated package version
         run: |
           git add package.json
+          git add package-lock.json
           git commit -m "chore: Update package version to ${{ steps.semver.outputs.version }}"
 
       - name: Push changes
