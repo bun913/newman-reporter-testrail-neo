@@ -2,7 +2,14 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import getEnv from "../../lib/environment"
 import TestRailResultSender from "../../lib/tsetRailResultSender"
 import { setEnvVars } from "../utils/env"
-import { makeFakeRequest, makeFakeTestRailApi } from "../utils/fake"
+import {
+  makeAllFakeApi,
+  makeFakeAddResultsResponse,
+  makeFakeJsonfiyResult,
+  makeFakeRequest,
+  makeFakeTestRailApi,
+  makeTestrailReporterWithFakeApi,
+} from "../utils/fake"
 import makeNewmanResult from "../utils/newman"
 
 const makeFakeSender = (vi, env = {}, fakeRequest = undefined) => {
@@ -38,7 +45,21 @@ describe("TestRailResultSender", () => {
         "\nnewman-reporter-testrail-neo: No test cases were found.",
       )
     })
-    // TODO: Add more tests for sendResults
+
+    it("returns runInfo if test cases were found", () => {
+      // arrange
+      const projectName = "testProject"
+      const fakeApi = makeAllFakeApi(vi, {}, projectName)
+      const env = getEnv()
+      const sut = new TestRailResultSender(fakeApi, env)
+
+      // act
+      const result = sut.sendResults(makeFakeJsonfiyResult(vi))
+
+      // assert
+      expect(result).toHaveProperty("runId")
+      expect(result).toHaveProperty("url")
+    })
   })
 
   describe("determineTestRailRun", () => {
@@ -211,7 +232,6 @@ describe("TestRailResultSender", () => {
     it("does not close the run if the env variable is set to false", () => {
       // arrange
       const sut = makeFakeSender(vi, { TESTRAIL_CLOSE_RUN: "false" })
-      console.log(sut.env)
 
       // act
       sut.closeRunIfNeeded("123")
